@@ -5,4 +5,4 @@ class task_serializer(serializers.ModelSerializer):
     
     class Meta:
         model = tasks
-        fields = ['task', 'task_details', 'task_due_date', 'task_due_time']
+        fields = ['email', 'task', 'task_details', 'task_due_date', 'task_due_time']

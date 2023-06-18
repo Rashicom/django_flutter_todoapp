@@ -8,12 +8,31 @@ from .models import tasks
 # Create your views here.
 
 
-class home(APIView):
+# user login
+class user_login(APIView):
     
+    def post(self, request, format = None):
+        return Response({"status":"user_login"})
+
+
+# user signup
+class user_signup(APIView):
+
+    def post(self, request, format = True):
+        return Response({"status":"user_signup"})
+
+
+# returning all task_list
+class task_list_all(APIView):
+    """
+    returning all the tasks of the perticular user
+    this is not returning for specific dates
+    """
     def get(self, request, format=None):
         snippets = tasks.objects.all()
         serialized_data = task_serializer(snippets, many = True)
         return Response(serialized_data.data)
+
 
 class addtask(APIView):
     
@@ -21,7 +40,6 @@ class addtask(APIView):
         print("request hit")
         serialized_data = task_serializer(data=requset.data)
         print(requset.data)
-        
 
         if serialized_data.is_valid():
             
