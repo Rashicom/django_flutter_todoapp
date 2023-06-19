@@ -65,5 +65,5 @@ class tasks(models.Model):
 
 
 # {"task" :  "new task", "task_details" : "task_details new", "task_due_date": "26-06-2023", "task_due_time":"09:10"}
-
+# {"email" : "", "contact_number" : "", "first_name" : ""  }
 # Create your models here.
