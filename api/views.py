@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import task_serializer,  user_serializer, login_serializer
 from .models import tasks, CustomUser
+from rest_framework.decorators import api_view
 
 # Create your views here.
 
@@ -20,6 +21,7 @@ class user_login(APIView):
 
 
 # user signup
+@api_view(['POST'])
 class user_signup(APIView):
 
     def post(self, request, format = True):
