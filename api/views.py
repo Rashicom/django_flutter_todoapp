@@ -21,8 +21,8 @@ class user_login(APIView):
 
 
 # user signup
-@api_view(['POST'])
 class user_signup(APIView):
+    serializer_class = user_serializer
 
     def post(self, request, format = True):
         """

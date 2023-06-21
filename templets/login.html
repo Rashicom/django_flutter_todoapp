@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+<div class="container d-flex justify-content-center">
+    <div class="bg-dark bg-opacity-25 rounded-3 p-3" style="width: 25rem;">
+        <form class="">
+            
+            <div class="d-flex justify-content-center">
+                <h2 class="">Login</h2>
+            </div>
+            
+            <hr>
+            <!-- Email input -->
+            <div class="form-outline mb-4">
+              <input type="email" id="form2Example1" placeholder="Email address" class="form-control bg-transparent" />
+              
+            </div>
+          
+            <!-- Password input -->
+            <div class="form-outline mb-4">
+              <input type="password" id="form2Example2" placeholder="Password" class="form-control bg-transparent" />
+              
+            </div>
+          
+            <!-- 2 column grid layout for inline styling -->
+            <div class="row mb-4">
+              <div class="col d-flex justify-content-end">
+                <a href="#!">Forgot password?</a>
+              </div>
+            </div>
+          
+            <!-- Submit button -->
+            <div class="d-grid gap-2">
+                <button type="button" class="btn btn-primary">Sign in</button>
+                
+              </div>
+          
+            <!-- Register buttons -->
+            <div class="text-center">
+              <p>Not a member? <a href="{% url 'signuppage' %}">Register</a></p>
+              <p>or sign up with:</p>
+              <button type="button" class="btn btn-link btn-floating mx-1">
+                <i class="fab fa-facebook-f"></i>
+              </button>
+          
+              <button type="button" class="btn btn-link btn-floating mx-1">
+                <i class="fab fa-google"></i>
+              </button>
+          
+              <button type="button" class="btn btn-link btn-floating mx-1">
+                <i class="fab fa-twitter"></i>
+              </button>
+          
+              <button type="button" class="btn btn-link btn-floating mx-1">
+                <i class="fab fa-github"></i>
+              </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}

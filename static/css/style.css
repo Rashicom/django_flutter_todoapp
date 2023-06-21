@@ -1,0 +1,10 @@
+body{
+    background-color: rgb(84, 105, 124);
+}
+
+.test{
+
+    height: 300px;
+    width: 300px;
+    background-color: azure;
+}

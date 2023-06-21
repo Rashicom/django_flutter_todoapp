@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+<div class="container d-flex justify-content-center">
+    <div class="bg-dark bg-opacity-25 rounded-3 p-3" style="width: 25rem;">
+        <form class="">
+          {% csrf_token %}
+            <div class="d-flex justify-content-center">
+                <h2 class="">Signup</h2>
+            </div>            
+            <hr>
+            <div>
+              {{ form }}
+            </div>
+            
+          
+            <!-- Submit button -->
+            <br>
+            <div class="d-grid gap-2">
+              <button class="btn btn-primary" id="signup_api_call" type="button">Submit</button>
+              
+            </div>
+
+
+            <!-- Register buttons -->
+            <div class="text-center">
+              
+              <p>or sign up with:</p>
+              <button type="button" class="btn btn-link btn-floating mx-1">
+                <i class="fab fa-facebook-f"></i>
+              </button>
+          
+              <button type="button" class="btn btn-link btn-floating mx-1">
+                <i class="fab fa-google"></i>
+              </button>
+          
+              <button type="button" class="btn btn-link btn-floating mx-1">
+                <i class="fab fa-twitter"></i>
+              </button>
+          
+              <button type="button" class="btn btn-link btn-floating mx-1">
+                <i class="fab fa-github"></i>
+              </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+  
+</script>
+{% endblock content %}
