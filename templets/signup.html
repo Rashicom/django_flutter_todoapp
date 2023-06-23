@@ -3,52 +3,148 @@
 
 
 {% block content %}
-<div class="container d-flex justify-content-center">
-    <div class="bg-dark bg-opacity-25 rounded-3 p-3" style="width: 25rem;">
-        <form class="">
-          {% csrf_token %}
-            <div class="d-flex justify-content-center">
-                <h2 class="">Signup</h2>
-            </div>            
-            <hr>
-            <div>
-              {{ form }}
-            </div>
-            
-          
-            <!-- Submit button -->
-            <br>
-            <div class="d-grid gap-2">
-              <button class="btn btn-primary" id="signup_api_call" type="button">Submit</button>
-              
-            </div>
+<div class="row">
 
+  <div class="col-4 px-5">
+    <h3>API Log</h3>
+    <div class="list-group">
+      <a href="#" class="list-group-item list-group-item-action active">/api/task_list_all/</a>
+        <a href="#" class="list-group-item list-group-item-action">/api/login/</a>
+        <a href="#" class="list-group-item list-group-item-action">/api/signup/</a>
+        <a href="#" class="list-group-item list-group-item-action">/api/addtask/</a>
+        <a href="#" class="list-group-item list-group-item-action">/api/check/</a>
 
-            <!-- Register buttons -->
-            <div class="text-center">
-              
-              <p>or sign up with:</p>
-              <button type="button" class="btn btn-link btn-floating mx-1">
-                <i class="fab fa-facebook-f"></i>
-              </button>
-          
-              <button type="button" class="btn btn-link btn-floating mx-1">
-                <i class="fab fa-google"></i>
-              </button>
-          
-              <button type="button" class="btn btn-link btn-floating mx-1">
-                <i class="fab fa-twitter"></i>
-              </button>
-          
-              <button type="button" class="btn btn-link btn-floating mx-1">
-                <i class="fab fa-github"></i>
-              </button>
-            </div>
-        </form>
     </div>
+  </div>
+
+  <div class="col-4">
+
+    <div class="bg-dark bg-opacity-25 rounded-3 p-3" style="width: 25rem;">
+      <form method="POST" id="user_registration_form">
+        {% csrf_token %}
+          <div class="d-flex justify-content-center">
+              <h2 class="">Signup</h2>
+          </div>            
+          <hr>
+          <div>
+            {{ form }}
+          </div>
+          
+          <p class="text-danger" id="signup_error"></p>
+          <!-- Submit button -->
+          <br>
+          <div class="d-grid gap-2">
+            <button class="btn btn-primary" id="signup_api_call" type="submit">Submit</button>
+            
+          </div>
+
+
+          <!-- Register buttons -->
+          <div class="text-center">
+            
+            <p>or sign up with:</p>
+            <button type="button" class="btn btn-link btn-floating mx-1">
+              <i class="fab fa-facebook-f"></i>
+            </button>
+        
+            <button type="button" class="btn btn-link btn-floating mx-1">
+              <i class="fab fa-google"></i>
+            </button>
+        
+            <button type="button" class="btn btn-link btn-floating mx-1">
+              <i class="fab fa-twitter"></i>
+            </button>
+        
+            <button type="button" class="btn btn-link btn-floating mx-1">
+              <i class="fab fa-github"></i>
+            </button>
+          </div>
+      </form>
+    </div>
+
+  </div>
+
+  <div class="col-4">
+
+    <h3>API info</h3>
+    <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+      <div class="card-header">Header</div>
+      <div class="card-body">
+        <h5 class="card-title">Primary card title</h5>
+        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+      </div>
+    </div>
+
+    <br>
+    <h4>API Status</h4>
+    <div class="card border-info bg-transparent mb-3" style="max-width: 18rem;">
+      <div class="card-header">Status:</div>
+      <div class="card-body">
+        <p class="card-text">message:</p>
+        <p class="card-text">return message</p>
+      </div>
+    </div>
+
+  </div>
+
+    
 </div>
 
 <script>
+
+  var signup_button = document.getElementById("user_registration_form")
   
+  // signup button event
+  signup_button.onsubmit = function(event){
+    event.preventDefault()
+
+    // fetching the information from the fields to fire signup api
+    var email = document.getElementById('id_email').value
+    var contact_number = document.getElementById('id_contact_number').value
+    var first_name = document.getElementById('id_first_name').value
+    var password = document.getElementById('id_password').value
+    var confirm_password = document.getElementById('id_confirm_password').value
+    
+    /*
+    default validation are there becouse we have to check the password match only
+    front end full validation not neede for developing api
+    this is a test window for front end developers, not users
+    */
+
+    // checking the password is matched or not
+    if (password != confirm_password){
+      document.getElementById("signup_error").textContent = "* Password mismatch"
+      console.log("password mismatch")
+      return
+    }
+
+
+    console.log("user creation submit button")
+    
+    fetch('/api/signup/', {
+      method: "POST",
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        "email": email,
+        "contact_number": contact_number,
+        "first_name": first_name,
+        "password": password
+      })
+    })
+    
+    .then((data) => {
+      console.log(data.status)
+      
+    })
+    
+    .catch((err) => {
+      console.log("exception found")
+      
+    })
+    console.log("button click completd")
+  }
+
 </script>
 {% endblock content %}

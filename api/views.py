@@ -29,7 +29,7 @@ class user_signup(APIView):
         serializing the recieved data and and validate the data
         if any exception found it returden with the exception error message
         """
-        
+        print(request.data)
         # serializing data
         serialized_data = user_serializer(data = request.data)
         
@@ -85,5 +85,9 @@ class addtask(APIView):
             
 
 
-        
+
+class check(APIView):
+
+    def get(self, request, format=None):
+        return Response({"check":"check_success"})     
         

@@ -3,8 +3,21 @@
 
 
 {% block content %}
-<div class="container d-flex justify-content-center">
-    <div class="bg-dark bg-opacity-25 rounded-3 p-3" style="width: 25rem;">
+<div class=" row">
+    <div class="col-4 px-5">
+      <h3>API Log</h3>
+      <div class="list-group">
+        <a href="#" class="list-group-item list-group-item-action active">Task list all</a>
+        <a href="#" class="list-group-item list-group-item-action">Login</a>
+        <a href="#" class="list-group-item list-group-item-action">Signup</a>
+        <a href="#" class="list-group-item list-group-item-action">Add task</a>
+        <a href="#" class="list-group-item list-group-item-action">Check</a>
+      </div>
+    </div>
+
+    <div class="col-4">
+
+      <div class="bg-dark bg-opacity-25 rounded-3 p-3" style="width: 25rem;">
         <form class="">
             
             <div class="d-flex justify-content-center">
@@ -58,6 +71,29 @@
               </button>
             </div>
         </form>
+      </div>
+
+    </div>
+
+    <div class="col-4">
+      <h3>API info</h3>
+      <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+        <div class="card-header">Header</div>
+        <div class="card-body">
+          <h5 class="card-title">Primary card title</h5>
+          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+        </div>
+      </div>
+
+      <br>
+      <h4>API Status</h4>
+      <div class="card border-info bg-transparent mb-3" style="max-width: 18rem;">
+        <div class="card-header">Status:</div>
+        <div class="card-body">
+          <p class="card-text">message:</p>
+          <p class="card-text">return message</p>
+        </div>
+      </div>
     </div>
 </div>
 {% endblock content %}

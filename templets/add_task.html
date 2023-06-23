@@ -20,8 +20,12 @@
     <div class="bg-dark bg-opacity-25 rounded-3 p-3" style="width: 25rem;">
       <h3>Task list</h3>
       <hr>
-
-      <!-- iteravly list all the task here -->
+    
+      <form id = "add_task_form">
+        {{form}}
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+      
 
     </div>
 
@@ -96,4 +100,11 @@
     </div>
   </div>
 </div>
+
+<script>
+    document.getElementById("add_task_form").onsubmit = function(event) {
+        event.preventDefault()
+        console.log("form submit")
+    }
+</script>
 {% endblock content %}
