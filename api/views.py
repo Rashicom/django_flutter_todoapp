@@ -39,7 +39,7 @@ class user_login(APIView):
 
         # else return 401 unautherized message
         else:
-            return Response({"status":401,"message":"invalied credencials"}, status=401)   
+            return Response({"status":401,"message":"unauthorized"}, status=401)   
 
 
 # logout
@@ -97,12 +97,12 @@ class user_signup(APIView):
 
 # returning all task_list
 class task_list_all(APIView):
-    """
-    returning all the tasks of the perticular user
-    this is not returning for specific dates
-    """
 
     def get(self, request, format=None):
+        """
+        returning all the tasks of the perticular user
+        this is not returning for specific dates
+        """
         snippets = tasks.objects.all()
         serialized_data = task_serializer(snippets, many = True)
         return Response(serialized_data.data)

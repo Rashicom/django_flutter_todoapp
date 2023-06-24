@@ -131,11 +131,11 @@
         "contact_number": contact_number,
         "first_name": first_name,
         "password": password
-      })
+      }).then(response => response.json())
     })
     
     .then((data) => {
-      console.log(data.status)
+      console.log(data)
       
     })
     

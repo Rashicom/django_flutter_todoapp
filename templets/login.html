@@ -27,13 +27,13 @@
             <hr>
             <!-- Email input -->
             <div class="form-outline mb-4">
-              <input type="email" id="form2Example1" placeholder="Email address" class="form-control bg-transparent" />
+              <input type="email" id="email" placeholder="Email address" class="form-control bg-transparent" />
               
             </div>
           
             <!-- Password input -->
             <div class="form-outline mb-4">
-              <input type="password" id="form2Example2" placeholder="Password" class="form-control bg-transparent" />
+              <input type="password" id="password" placeholder="Password" class="form-control bg-transparent" />
               
             </div>
           
@@ -46,7 +46,7 @@
           
             <!-- Submit button -->
             <div class="d-grid gap-2">
-                <button type="button" class="btn btn-primary">Sign in</button>
+                <button type="button" id="user_login" class="btn btn-primary">Sign in</button>
                 
               </div>
           
@@ -77,23 +77,128 @@
 
     <div class="col-4">
       <h3>API info</h3>
-      <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
-        <div class="card-header">Header</div>
+      <div class="card text-white bg-primary mb-3" style="max-width: 23rem;">
         <div class="card-body">
-          <h5 class="card-title">Primary card title</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+          
+  
+          <!-- api documentation -->
+          <h5>Method: POST</h5>
+          <p>URL: /api/login/</p>
+          <h5>Request:</h5>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th class="bg-transparent">Parameter</th>
+                <th class="bg-transparent">Type</th>    
+              </tr>
+            </thead>
+            <tbody>
+  
+              <tr>
+                
+                <td class="bg-transparent">email</td>
+                <td class="bg-transparent">string</td>
+                
+              </tr>
+
+              <tr>
+                
+                <td class="bg-transparent">password</td>
+                <td class="bg-transparent">string</td>
+                
+              </tr>
+              
+              
+            </tbody>
+          </table>
+  
+  
+          <!-- responce -->
+          <h5>Responce:</h5>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th class="bg-transparent">Parameter</th>
+                <th class="bg-transparent">Type</th>    
+              </tr>
+            </thead>
+            <tbody>
+  
+              <tr>
+                
+                <td class="bg-transparent">200</td>
+                <td class="bg-transparent">{email,token}</td>
+                
+              </tr>
+              <tr>
+                
+                <td class="bg-transparent">401</td>
+                <td class="bg-transparent">{message:"unauthorized"}</td>
+                
+              </tr>
+              <tr>
+                
+                <td class="bg-transparent">400</td>
+                <td class="bg-transparent">{message:"Enter a valid email address"}</td>
+                
+              </tr>
+              
+              
+            </tbody>
+          </table>
+  
+  
+          
         </div>
       </div>
-
+  
       <br>
       <h4>API Status</h4>
       <div class="card border-info bg-transparent mb-3" style="max-width: 18rem;">
-        <div class="card-header">Status:</div>
+        <div class="card-header d-flex justify-content-between">
+          <p class="m-0">Status</p>
+          <p class="m-0" id="api_status"></p>
+        </div>
         <div class="card-body">
-          <p class="card-text">message:</p>
-          <p class="card-text">return message</p>
+          <p class="card-text m-0">message: </p>
+          <p class="m-0" id="api_data"></p>
+          
         </div>
       </div>
     </div>
 </div>
+
+<script>
+
+  // calling login api 
+  document.getElementById('user_login').onclick = function() {
+
+    // fetching login credencials
+    var email = document.getElementById('email').value
+    var password = document.getElementById('password').value
+    
+    // firing api fetch
+    fetch('/api/login/', {
+      method: "POST",
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        "email": email,
+        "password": password
+      })
+    }).then(response => response.json())
+    
+    .then((data) => {
+      console.log(data)
+      
+      //update api status field
+      document.getElementById("api_status").textContent = data.status
+      document.getElementById("api_data").textContent = data
+    })
+
+
+  }
+
+</script>
 {% endblock content %}
