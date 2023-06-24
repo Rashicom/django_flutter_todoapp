@@ -5,19 +5,43 @@ from rest_framework.views import APIView
 from .serializers import task_serializer,  user_serializer, login_serializer
 from .models import tasks, CustomUser
 from rest_framework.decorators import api_view
+from django.contrib.auth import authenticate
+from rest_framework.authtoken.models import Token
 
 # Create your views here.
 
 
 # user login
 class user_login(APIView):
+    serializer_class = login_serializer
 
     def post(self, request, format = None):
+        """
+        serialing the data and validating it, any exception found is_valied()
+        the functionn automatically return respond with the error message as a dictionery
+        """
 
-        # resialize data
-        serialized_data = login_serializer(data=request.data)
+        # serializing data
+        serializer = self.serializer_class(data=request.data)
+
+        # validating the data
+        serializer.is_valid(raise_exception=True)
+
+        # authenticate the user
+        email = serializer.validated_data['email']
+        password = serializer.validated_data['password']
+        user = authenticate(request, email = email, password = password)
         
-        return Response({"status":"ok"}, status=200)
+        # if user is authenticated create tocken
+        if user:
+            token, created = Token.objects.get_or_create(user = user)
+            return Response({"status":200, "email": email, "token": token.key}, status=200)
+
+        # else return 401 unautherized message
+        else:
+            return Response({"status":401,"message":"invalied credencials"}, status=401)   
+
+
 
 
 # user signup

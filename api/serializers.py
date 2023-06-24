@@ -18,6 +18,9 @@ class user_serializer(serializers.ModelSerializer):
 
 class login_serializer(serializers.ModelSerializer):
     
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(required=True)
+    
     class Meta:
         model = CustomUser
         fields = ['email', 'password']
