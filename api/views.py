@@ -42,6 +42,24 @@ class user_login(APIView):
             return Response({"status":401,"message":"invalied credencials"}, status=401)   
 
 
+# logout
+class user_logout(APIView):
+
+    def post(self, request, format = None):
+        """
+        we have ot just delete the tocken from the tocken table using the
+        user email.then return nothing. becouse it is stateless
+        """
+        # delete tocken from the table
+        # Token.objects.get(user = request.user)
+        try:
+            Token.objects.get(user = request.data['email']).delete()
+            return Response(status=200)
+        
+        # return the same if url again called without any data
+        except Exception as e:
+            return Response(status=200)
+
 
 
 # user signup
