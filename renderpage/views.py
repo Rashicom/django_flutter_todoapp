@@ -8,6 +8,7 @@ from .forms import signupform, add_task_form
 class login(View):
 
     def get(self, request):
+        
         return render(request,'login.html')
 
     def post(self, request):

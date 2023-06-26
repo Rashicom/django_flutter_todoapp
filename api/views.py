@@ -7,6 +7,8 @@ from .models import tasks, CustomUser
 from rest_framework.decorators import api_view
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
+from rest_framework.permissions import IsAuthenticated
+
 
 # Create your views here.
 
@@ -14,8 +16,9 @@ from rest_framework.authtoken.models import Token
 # user login
 class user_login(APIView):
     serializer_class = login_serializer
-
+    
     def post(self, request, format = None):
+        
         """
         serialing the data and validating it, any exception found is_valied()
         the functionn automatically return respond with the error message as a dictionery
@@ -35,7 +38,7 @@ class user_login(APIView):
         # if user is authenticated create tocken
         if user:
             token, created = Token.objects.get_or_create(user = user)
-            return Response({"status":200, "email": email, "token": token.key}, status=200)
+            return Response({"status":200, "email": email, "Authorization": "Token "+token.key}, status=200)
 
         # else return 401 unautherized message
         else:
@@ -71,7 +74,7 @@ class user_signup(APIView):
         serializing the recieved data and and validate the data
         if any exception found it returden with the exception error message
         """
-        print(request.data)
+        
         # serializing data
         serialized_data = user_serializer(data = request.data)
         
@@ -103,23 +106,40 @@ class task_list_all(APIView):
         returning all the tasks of the perticular user
         this is not returning for specific dates
         """
+        print("task list request hit")
+        print(request.data)
         snippets = tasks.objects.all()
         serialized_data = task_serializer(snippets, many = True)
         return Response(serialized_data.data)
 
 
+# add new task
 class addtask(APIView):
-    
-    def post(self, requset, format=None):
-        print("request hit")
-        serialized_data = task_serializer(data=requset.data)
-        print(requset.data)
+    permission_classes = [IsAuthenticated]
 
+    def post(self, request, format=None):
+        """
+        authenticated user can add task to thire task lists, if authentication
+        pass
+        varify the email in the body is match with the tokens matching email.
+        otherwise return email is invalied
+        """
+        serialized_data = task_serializer(data=request.data)
+
+        # fetching email form body to check with tocken authenticated user
+        email = request.data["email"]
+
+        # cross check for missmatch
+        if str(email) != str(request.user):
+            return Response({"status":"tocken and email missmatch"}, status=401)
+
+        
+        # new task added if the data is valied
         if serialized_data.is_valid():
-            
-            print("valied")
-            print(serialized_data.data)
-            return Response(serialized_data.data)
+            serialized_data.save()
+            return Response(serialized_data.data, status=201)
+        
+        #  if not valied return error details
         else:
             print(serialized_data.errors)
             print("not valied")
@@ -129,7 +149,10 @@ class addtask(APIView):
 
 
 class check(APIView):
-
+    permission_classes = [IsAuthenticated]
     def get(self, request, format=None):
-        return Response({"check":"check_success"})     
-        
+        print(request.auth)
+        print(request.user)
+        return Response({"check":"check_success"})  
+
+    
