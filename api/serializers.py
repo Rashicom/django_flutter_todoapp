@@ -5,8 +5,7 @@ class task_serializer(serializers.ModelSerializer):
     
     class Meta:
         model = tasks
-        fields = ['email', 'task', 'task_details', 'task_due_date', 'task_due_time']
-
+        fields = '__all__'
 
 
 class user_serializer(serializers.ModelSerializer):
@@ -46,4 +45,3 @@ class user_details(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['email', 'contact_number', 'first_name']
-        

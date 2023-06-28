@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import task_serializer,  user_serializer, login_serializer, task_list_all_serializer
+from .serializers import task_serializer,  user_serializer, login_serializer, task_list_all_serializer, user_details
 from .models import tasks, CustomUser
 from rest_framework.decorators import api_view
 from django.contrib.auth import authenticate
@@ -173,6 +173,8 @@ class addtask(APIView):
         otherwise return email is invalied
         """
         serialized_data = task_serializer(data=request.data)
+        status = serialized_data.is_valid(raise_exception=True)
+        
 
         # fetching email form body to check with tocken authenticated user
         email = request.data["email"]
@@ -198,11 +200,20 @@ class addtask(APIView):
 # user details
 class user_details(APIView):
     
+    permission_classes = [IsAuthenticated]
+    serializer_class = user_details
+
     def get(self, request, format = None):
         """
         this view is returning the user details who is authenticated
         """
-        pass
+        # fetching user data
+        user_details = CustomUser.objects.get(email = request.user)
+
+        # serializing and returning the data
+        serialized_data = self.serializer_class(user_details)
+        return Response(serialized_data.data, status=200)
+
 
 
 class check(APIView):
@@ -211,5 +222,7 @@ class check(APIView):
         print(request.auth)
         print(request.user)
         return Response({"check":"check_success"})  
+
+
 
     

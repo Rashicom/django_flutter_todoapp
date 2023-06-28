@@ -10,5 +10,7 @@ urlpatterns = [
     path('check/', views.check.as_view()),
     path('task_list_checked/', views.task_list_checked.as_view()),
     path('task_list_unchecked/', views.task_list_unchecked.as_view()),
+    path('user_details/', views.user_details.as_view()),
+    
 
 ]
