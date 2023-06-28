@@ -18,7 +18,7 @@ class user_serializer(serializers.ModelSerializer):
 class login_serializer(serializers.ModelSerializer):
     
     email = serializers.EmailField(required=True)
-    password = serializers.CharField(required=True)
+    password = serializers.CharField(required = True)
     
     class Meta:
         model = CustomUser
@@ -34,10 +34,10 @@ class task_list_all_serializer(serializers.ModelSerializer):
     """
     class Meta:
         model = tasks
-        fields = '__all___'
+        fields = '__all__'
 
 # user details
-class user_details(serializers.ModelSerializer):
+class user_details_serializer(serializers.ModelSerializer):
 
     """
     serializer for user details
@@ -45,3 +45,12 @@ class user_details(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['email', 'contact_number', 'first_name']
+
+# update serializer
+class update_serializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = tasks
+        fields = '__all__'
+        
+        

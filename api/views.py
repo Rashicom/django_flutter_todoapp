@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import task_serializer,  user_serializer, login_serializer, task_list_all_serializer, user_details
+from .serializers import task_serializer,  user_serializer, login_serializer, task_list_all_serializer, user_details_serializer
 from .models import tasks, CustomUser
 from rest_framework.decorators import api_view
 from django.contrib.auth import authenticate
@@ -116,6 +116,7 @@ class task_list_all(APIView):
         print(request.user)
         #serializing the data and returning    
         serialized_data = self.serializer_class(snippets, many = True)
+        
         return Response(serialized_data.data, status=200)
 
 
@@ -173,8 +174,6 @@ class addtask(APIView):
         otherwise return email is invalied
         """
         serialized_data = task_serializer(data=request.data)
-        status = serialized_data.is_valid(raise_exception=True)
-        
 
         # fetching email form body to check with tocken authenticated user
         email = request.data["email"]
@@ -201,7 +200,7 @@ class addtask(APIView):
 class user_details(APIView):
     
     permission_classes = [IsAuthenticated]
-    serializer_class = user_details
+    serializer_class = user_details_serializer
 
     def get(self, request, format = None):
         """
@@ -213,6 +212,49 @@ class user_details(APIView):
         # serializing and returning the data
         serialized_data = self.serializer_class(user_details)
         return Response(serialized_data.data, status=200)
+
+
+
+# updat task
+class updatetask(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = task_serializer
+
+    def patch(self, request, format = None):
+        """
+        this view is updating the fields which the user is provided
+        user can update multiple fieslds at the same time.
+        """
+        print("patch request")
+        task_id = request.data.get('task_id')
+        email = request.data.get('email')
+        
+        # if the task id not found or email missmatch return error message
+        if task_id is None:
+            return Response({"message": "task_id must be given"}, status=400)
+        if email and str(email) != str(request.user):
+            return Response({"message": "email does not match"}, status=400)
+
+        # fetching task model object to update
+        model_obj = tasks.objects.get(task_id = task_id)
+        
+        """
+        inisializing serializer, task object is passed to the serializer to update
+        saving the serializer makes a replace to the field which we provided in the 
+        request.data
+        """
+        serialized_data = self.serializer_class(model_obj ,data=request.data, partial=True)
+
+        # if the felds are validated succussfully, save the serializer
+        try:
+            if serialized_data.is_valid(raise_exception=True):
+                serialized_data.save()
+                return Response(serialized_data.data, status=200)
+        
+        # if any exception found return it
+        except Exception as e:
+            print(e)
+            return Response({"status":"field not updated"}, status=403)
 
 
 
