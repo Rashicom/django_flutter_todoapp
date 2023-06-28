@@ -276,6 +276,57 @@ class deletetask(APIView):
             print(e)    
             return Response({"message":"task not found"}, status=404)
         
+# check task_status
+class task_check(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = task_serializer
+
+    def patch(self, request, task_id, format = None):
+        """
+        patch a perticlurlar quety in the database
+        """
+        # if the data foung in the dabase update an scheched
+        try:
+            task_instance = tasks.objects.get(task_id = task_id, email = request.user)
+            task_instance.task_status = True
+            task_instance.save()
+
+            # initializing a serializer to send the updated data to the doctor
+            serialized_data = self.serializer_class(task_instance)
+
+            # returning with updated data
+            return Response(serialized_data.data, status=200)
+        
+        except Exception as e:
+            print(e)
+            return Response({"message":"task not found"}, status=404)
+
+
+
+# uncheck task
+class task_uncheck(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = task_serializer
+
+    def patch(self, request, task_id, format = None):
+        """
+        patch a perticlurlar quety in the database
+        """
+        # if the data foung in the dabase update an scheched
+        try:
+            task_instance = tasks.objects.get(task_id = task_id, email = request.user)
+            task_instance.task_status = False
+            task_instance.save()
+
+            # initializing a serializer to send the updated data to the doctor
+            serialized_data = self.serializer_class(task_instance)
+
+            # returning with updated data
+            return Response(serialized_data.data, status=200)
+        
+        except Exception as e:
+            print(e)
+            return Response({"message":"task not found"}, status=404)
 
 
 class check(APIView):
