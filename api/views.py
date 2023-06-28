@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import task_serializer,  user_serializer, login_serializer
+from .serializers import task_serializer,  user_serializer, login_serializer, task_list_all_serializer
 from .models import tasks, CustomUser
 from rest_framework.decorators import api_view
 from django.contrib.auth import authenticate
@@ -48,15 +48,15 @@ class user_login(APIView):
 # logout
 class user_logout(APIView):
 
-    def post(self, request, format = None):
+    def get(self, request, format = None):
         """
         we have ot just delete the tocken from the tocken table using the
-        user email.then return nothing. becouse it is stateless
+        user email. then return nothing. becouse it is stateless
         """
         # delete tocken from the table
         # Token.objects.get(user = request.user)
         try:
-            Token.objects.get(user = request.data['email']).delete()
+            Token.objects.get(user = request.user).delete()
             return Response(status=200)
         
         # return the same if url again called without any data
@@ -100,17 +100,65 @@ class user_signup(APIView):
 
 # returning all task_list
 class task_list_all(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = task_list_all_serializer
 
     def get(self, request, format=None):
         """
-        returning all the tasks of the perticular user
-        this is not returning for specific dates
+        returning all the tasks of the perticular user who is accessed
+        returning all the task including checked tasks
+        advised to use another url if u need unchecked tasks
         """
-        print("task list request hit")
-        print(request.data)
-        snippets = tasks.objects.all()
-        serialized_data = task_serializer(snippets, many = True)
-        return Response(serialized_data.data)
+        print("request hit")
+        
+        # fetching all the task list of the user who is accessed
+        snippets = tasks.objects.filter(email = request.user)
+        print(request.user)
+        #serializing the data and returning    
+        serialized_data = self.serializer_class(snippets, many = True)
+        return Response(serialized_data.data, status=200)
+
+
+
+# returning the checked task only
+class task_list_checked(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = task_list_all_serializer
+
+    def get(self, request, format = None):
+        """
+        this view is filtering only checked(compleated tasks) from the data base
+        and return to the user who is requested for
+        """
+        print("checked data")
+
+        # fetching checked tasks list of the user who is accessed
+        snippets = tasks.objects.filter(email = request.user, task_status = True)
+        
+        # serializing data and return
+        serialized_data =  self.serializer_class(snippets, many = True)
+        return Response(serialized_data.data, status=200)
+
+
+# returning the unchecked task only
+class task_list_unchecked(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = task_list_all_serializer
+
+    def get(self, request, format = None):
+        """
+        this view is filtering only unchecked(uncompleated tasks) from the data base
+        and return to the user who is requested for
+        """
+        print("unchecked data")
+
+        # fetching unchecked task list of the user who is accessed
+        snippets = tasks.objects.filter(email = request.user, task_status = False)
+        
+        # serializing data and return
+        serialized_data =  self.serializer_class(snippets, many = True)
+        return Response(serialized_data.data, status=200)
+
 
 
 # add new task
@@ -146,6 +194,15 @@ class addtask(APIView):
             return Response({"error":serialized_data.errors}, status=400)  
             
 
+
+# user details
+class user_details(APIView):
+    
+    def get(self, request, format = None):
+        """
+        this view is returning the user details who is authenticated
+        """
+        pass
 
 
 class check(APIView):
