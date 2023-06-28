@@ -257,6 +257,26 @@ class updatetask(APIView):
             return Response({"status":"field not updated"}, status=403)
 
 
+# delete task
+class deletetask(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, task_id, format = None):
+        """
+        delete the data using the task_id
+        """
+        
+        # find the data form the data base and delete if any record foud
+        try:
+            tasks.objects.get(task_id = task_id, email = request.user).delete()
+            return Response({"message":"test ok"}, status=200)
+        
+        # id exception found
+        except Exception as e:
+            print(e)    
+            return Response({"message":"task not found"}, status=404)
+        
+
 
 class check(APIView):
     permission_classes = [IsAuthenticated]

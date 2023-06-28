@@ -12,7 +12,8 @@ urlpatterns = [
     path('task_list_unchecked/', views.task_list_unchecked.as_view()),
     path('user_details/', views.user_details.as_view()),
     path('updatetask/',views.updatetask.as_view()),
-    
+    path('deletetask/<int:task_id>', views.deletetask.as_view()),
+
 
 
 ]
