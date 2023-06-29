@@ -1,6 +1,7 @@
 from django.urls import path,include
 from . import views
 
+
 urlpatterns = [
     path('login/',views.user_login.as_view()),
     path('logout/', views.user_logout.as_view()),
@@ -15,5 +16,7 @@ urlpatterns = [
     path('deletetask/<int:task_id>', views.deletetask.as_view()),
     path('task_check/<int:task_id>', views.task_check.as_view()),
     path('task_uncheck/<int:task_id>', views.task_uncheck.as_view()),
+    path('task_filter/', views.task_filter.as_view()),
+    
 
-]
+]   

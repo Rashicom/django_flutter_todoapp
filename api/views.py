@@ -8,7 +8,8 @@ from rest_framework.decorators import api_view
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
-
+import datetime
+from django.db.models import Q
 
 # Create your views here.
 
@@ -68,7 +69,7 @@ class user_logout(APIView):
 # user signup
 class user_signup(APIView):
     serializer_class = user_serializer
-
+    
     def post(self, request, format = True):
         """
         serializing the recieved data and and validate the data
@@ -275,7 +276,8 @@ class deletetask(APIView):
         except Exception as e:
             print(e)    
             return Response({"message":"task not found"}, status=404)
-        
+
+      
 # check task_status
 class task_check(APIView):
     permission_classes = [IsAuthenticated]
@@ -329,12 +331,61 @@ class task_uncheck(APIView):
             return Response({"message":"task not found"}, status=404)
 
 
+class task_filter(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, format = None):
+        """
+        this view is returning the filtered data from recieved date to recieved to date
+        if the user not send the to date it takes today date as defult
+        using status, user can decide which data is fetched. (checked, ucchecked, all)
+        defaulltly status takes all
+        """
+
+        # fetching data from the query params
+        from_date = request.query_params.get('from_date')
+        to_date = request.query_params.get('to_date', datetime.date.today())
+        status = request.query_params.get('status',"all")
+        
+        if from_date:
+            return Response({"message":"from date must be provided"}, status=400)
+        if status == "checked":
+            print("checked")
+            complex_q_optional = Q(task_status = True)
+        elif status == "unchecked":
+            print("unchecked")
+            complex_q_optional = Q(task_status = False)
+        else:
+            complex_q_optional = False
+
+
+        complex_q = Q(task_initial_date__gte = to_date) & Q(task_initial_date__lte = from_date)
+        print("complex", complex_q)
+
+        try:
+            if complex_q_optional:
+                filtered_data = tasks.objects.filter(complex_q & complex_q_optional)
+            else:
+                filtered_data = tasks.objects.filter(complex_q)
+        
+            print(filtered_data)
+            return Response({"messaage":"test responce"})
+        
+        except Exception as e:
+            print(e)
+            return Response({"exception":"true"})
+
+        
+
+
+# checking api
 class check(APIView):
     permission_classes = [IsAuthenticated]
+
     def get(self, request, format=None):
         print(request.auth)
         print(request.user)
-        return Response({"check":"check_success"})  
+        return Response({"message":"Api call success"}) 
 
 
 
