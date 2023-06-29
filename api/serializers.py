@@ -52,5 +52,4 @@ class update_serializer(serializers.ModelSerializer):
     class Meta:
         model = tasks
         fields = '__all__'
-        
-        
+
