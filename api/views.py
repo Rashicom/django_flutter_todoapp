@@ -346,9 +346,12 @@ class task_filter(APIView):
         from_date = request.query_params.get('from_date')
         to_date = request.query_params.get('to_date', datetime.date.today())
         status = request.query_params.get('status',"all")
+        print(from_date)
+        print(to_date)
         
-        if from_date:
+        if not from_date:
             return Response({"message":"from date must be provided"}, status=400)
+        
         if status == "checked":
             print("checked")
             complex_q_optional = Q(task_status = True)
@@ -359,13 +362,14 @@ class task_filter(APIView):
             complex_q_optional = False
 
 
-        complex_q = Q(task_initial_date__gte = to_date) & Q(task_initial_date__lte = from_date)
+        complex_q = Q(task_initial_date__lte = to_date) & Q(task_initial_date__gte = from_date)
         print("complex", complex_q)
 
         try:
             if complex_q_optional:
                 filtered_data = tasks.objects.filter(complex_q & complex_q_optional)
             else:
+                print("complex")
                 filtered_data = tasks.objects.filter(complex_q)
         
             print(filtered_data)
@@ -379,14 +383,19 @@ class task_filter(APIView):
 
 
 # checking api
-class check(APIView):
-    permission_classes = [IsAuthenticated]
+class check_api(APIView):
 
     def get(self, request, format=None):
         print(request.auth)
         print(request.user)
         return Response({"message":"Api call success"}) 
 
+
+class check_tocken(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format = None):
+        return Response({"message":"authentication success"})
 
 
     
