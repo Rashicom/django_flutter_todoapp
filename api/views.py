@@ -270,7 +270,7 @@ class deletetask(APIView):
         # find the data form the data base and delete if any record foud
         try:
             tasks.objects.get(task_id = task_id, email = request.user).delete()
-            return Response({"message":"test ok"}, status=200)
+            return Response({"message":"deleted"}, status=200)
         
         # id exception found
         except Exception as e:
@@ -333,6 +333,7 @@ class task_uncheck(APIView):
 
 class task_filter(APIView):
     permission_classes = [IsAuthenticated]
+    serializer_class = task_serializer
     
     def get(self, request, format = None):
         """
@@ -346,41 +347,42 @@ class task_filter(APIView):
         from_date = request.query_params.get('from_date')
         to_date = request.query_params.get('to_date', datetime.date.today())
         status = request.query_params.get('status',"all")
-        print(from_date)
-        print(to_date)
-        
+
+        # from date is mandatory
         if not from_date:
             return Response({"message":"from date must be provided"}, status=400)
         
+        # making complex query accoring to the provided status
         if status == "checked":
-            print("checked")
             complex_q_optional = Q(task_status = True)
+
         elif status == "unchecked":
-            print("unchecked")
             complex_q_optional = Q(task_status = False)
+
         else:
             complex_q_optional = False
 
+        # compaigning complext queries
+        complex_q = Q(task_initial_date__lte = to_date) & Q(task_initial_date__gte = from_date) & Q(email = request.user)
 
-        complex_q = Q(task_initial_date__lte = to_date) & Q(task_initial_date__gte = from_date)
-        print("complex", complex_q)
-
+        # filtering data
         try:
+
+            # filter data according to complex_q_optonal
             if complex_q_optional:
                 filtered_data = tasks.objects.filter(complex_q & complex_q_optional)
-            else:
-                print("complex")
+            else: 
                 filtered_data = tasks.objects.filter(complex_q)
-        
-            print(filtered_data)
-            return Response({"messaage":"test responce"})
+            
+            # serializing data and return respose
+            serialized_filtered_data = self.serializer_class(filtered_data, many=True)
+            return Response(serialized_filtered_data.data, status=200)
         
         except Exception as e:
             print(e)
             return Response({"exception":"true"})
 
         
-
 
 # checking api
 class check_api(APIView):

@@ -4,9 +4,9 @@ from . import views
 
 
 urlpatterns = [
+    path('signup/',views.user_signup.as_view()),
     path('login/',views.user_login.as_view()),
     path('logout/', views.user_logout.as_view()),
-    path('signup/',views.user_signup.as_view()),
     path('task_list_all/', views.task_list_all.as_view()),
     path('addtask/', views.addtask.as_view()),
     path('check_api/', views.check_api.as_view()),
